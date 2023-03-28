@@ -1,6 +1,7 @@
 
 import re  
 import os
+from app.status import TaskStatus
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
@@ -65,9 +66,26 @@ def register():
         message = 'Please fill all the fields!'
     return render_template('register.html', message = message)
 
-@app.route('/tasks', methods =['GET', 'POST'])
-def tasks():
-    return "Tasks page"
+@app.route('/task', methods =['GET', 'POST'])
+def task():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM TaskType')
+    task_types = cursor.fetchall()
+    
+    print(task_types)
+        
+    if request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form:
+        title = request.form['title']
+        description = request.form['description']
+        due_date = request.form['due-date']
+        task_type = request.form['task-type']
+        
+        cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, curdate(), NULL, session[\'userid\'], %s)', (title, description, TaskStatus.TODO, due_date, task_type))
+        mysql.connection.commit()
+        message = 'Task successfully created!'
+    elif request.method == 'POST':
+        message = 'Please fill all the fields!'
+    return render_template('task.html', task_types = task_types, message = '')
 
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
