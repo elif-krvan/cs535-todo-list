@@ -1,4 +1,16 @@
-<form action="{{ url_for('task') }}" method="post">
+<script>
+
+// Stop the form resubmission on page refresh
+
+if ( window.history.replaceState ) {
+
+window.history.replaceState( null, null, window.location.href );
+
+}
+
+</script>
+
+<form action="{{ url_for('create_task') }}" method="post">
 	{% if message is defined and message %}
 		<div class="alert alert-warning">{{ message }}</div>
 	{% endif %}
@@ -24,6 +36,36 @@
 	</div>     
 	<button type="submit" class="btn btn-primary">Create Task</button>
 </form>
+<br>
+<table>
+	<tr>
+		{% for head in task_headers.values() %}
+			<th>{{head}}</th>
+		{% endfor %}
+	</tr>
+
+	{% for task in task_todo %}
+		<tr>
+			<td>
+				<form action="/">
+				<input type="checkbox" id="isDone" name="isDone" value="Done">
+			  </form>
+			</td>
+			{% for key in task_headers.keys() %}
+				<td>{{task[key]}}</td>
+			{% endfor %}
+			<td>
+				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
+				<button class="btn btn-primary">Delete</button>
+			</td>
+	  	</tr>
+	{% endfor %}
+	
+  </table>
+
+
+
+
 
 <form action="{{ url_for('register') }}" method="get">
 <button class="btn btn-primary">Register</button>
