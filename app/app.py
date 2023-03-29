@@ -70,7 +70,7 @@ def register():
 @app.route('/task/done/<int:task_id>', methods =['POST'])
 def done_task(task_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('UPDATE Task SET status = %s WHERE id = %s', (TaskStatus.DONE.value, task_id,))
+    cursor.execute('UPDATE Task SET status = %s, done_time = now() WHERE id = %s', (TaskStatus.DONE.value, task_id,))
     mysql.connection.commit()
     return redirect(url_for('task'))
 
@@ -119,7 +119,11 @@ def task(message = ''):
     
     # get todo tasks from db
     cursor.execute('SELECT * FROM Task WHERE status = %s ORDER BY deadline', (TaskStatus.TODO.value,))
-    task_todo = cursor.fetchall()  
+    task_todo = cursor.fetchall()
+    
+    # get done tasks from db  
+    cursor.execute('SELECT * FROM Task WHERE status = %s ORDER BY done_time DESC', (TaskStatus.DONE.value,))
+    task_done = cursor.fetchall()
     
     task_headers = {
         'Mark': ' ',
@@ -128,11 +132,12 @@ def task(message = ''):
         'status': 'Status',
         'deadline': "Deadline",
         'creation_time': "Created At",
+        'done_time': 'Done At',
         'task_type': 'Category',
         'Delete': ' '
     }
     
-    return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, message = message)
+    return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, task_done = task_done, message = message)
 
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
