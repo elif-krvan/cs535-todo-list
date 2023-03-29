@@ -67,32 +67,19 @@ def register():
         message = 'Please fill all the fields!'
     return render_template('register.html', message = message)
 
-@app.route('/task/<int:task_id>', methods =['POST'])
+@app.route('/task/done/<int:task_id>', methods =['POST'])
+def done_task(task_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('UPDATE Task SET status = %s WHERE id = %s', (TaskStatus.DONE.value, task_id,))
+    mysql.connection.commit()
+    return redirect(url_for('task'))
+
+@app.route('/task/delete/<int:task_id>', methods =['POST'])
 def delete_task(task_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('DELETE FROM Task WHERE id = %s', (task_id,))
     mysql.connection.commit()
     return redirect(url_for('task'))
-
-# @app.route('/task', methods =['POST'])
-# def create_task():
-#     return "bic"
-    # if (request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form
-    #     and request.form['due-date'] != ''):
-    #     title = request.form['title']
-    #     description = request.form['description']
-    #     due_date = request.form['due-date']
-    #     task_type = request.form['task-type']
-        
-    #     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    #     cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, now(), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
-    #     mysql.connection.commit()
-    #     message = 'Task successfully created!'
-    #     return redirect(url_for('task'))
-    # elif request.method == 'POST':
-    #     message = 'Please fill all the fields!'
-    #     return task(message)
-    
 
 @app.route('/task', methods =['GET', 'POST', 'DELETE'])
 def task(message = ''):
@@ -102,6 +89,7 @@ def task(message = ''):
             "due_date": '',
             "task_type": '',
         }
+    
     if (request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form
         and request.form['due-date'] != '' and request.form['title'] != '' and request.form['description'] != ''):
         title = request.form['title']

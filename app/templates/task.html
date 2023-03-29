@@ -33,6 +33,8 @@ if ( window.history.replaceState ) {
 	<button type="submit" class="btn btn-primary">Create Task</button>
 </form>
 <br>
+
+
 <table>
 	<tr>
 		{% for head in task_headers.values() %}
@@ -43,17 +45,17 @@ if ( window.history.replaceState ) {
 	{% for task in task_todo %}
 		<tr>
 			<td>
-				<form action="/">
-				<input type="checkbox" id="isDone" name="isDone" value="Done">
-			  </form>
+				<form action="{{ url_for('done_task', task_id = task.id) }}" method="post">
+				<button class="btn btn-primary">Done</button>
+				</form>
 			</td>
 			{% for key in task_headers.keys() %}
-				{% if task_headers[key] != ' ' %}<td>{{task[key]}}</td>{% endif %}
-				
+				{% if task_headers[key] != ' ' %}<td>{{task[key]}}</td>{% endif %}				
 			{% endfor %}
 			<td>
 				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
 				<button class="btn btn-primary">Delete</button>
+				</form>
 			</td>
 	  	</tr>
 	{% endfor %}
