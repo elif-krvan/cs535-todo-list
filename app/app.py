@@ -74,9 +74,36 @@ def delete_task(task_id):
     mysql.connection.commit()
     return redirect(url_for('task'))
 
-@app.route('/task', methods =['POST'])
-def create_task():
-    if request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form:
+# @app.route('/task', methods =['POST'])
+# def create_task():
+#     return "bic"
+    # if (request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form
+    #     and request.form['due-date'] != ''):
+    #     title = request.form['title']
+    #     description = request.form['description']
+    #     due_date = request.form['due-date']
+    #     task_type = request.form['task-type']
+        
+    #     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    #     cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, now(), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
+    #     mysql.connection.commit()
+    #     message = 'Task successfully created!'
+    #     return redirect(url_for('task'))
+    # elif request.method == 'POST':
+    #     message = 'Please fill all the fields!'
+    #     return task(message)
+    
+
+@app.route('/task', methods =['GET', 'POST', 'DELETE'])
+def task(message = ''):
+    form = {
+            "title": '',
+            "description": '',
+            "due_date": '',
+            "task_type": '',
+        }
+    if (request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form
+        and request.form['due-date'] != '' and request.form['title'] != '' and request.form['description'] != ''):
         title = request.form['title']
         description = request.form['description']
         due_date = request.form['due-date']
@@ -86,19 +113,17 @@ def create_task():
         cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, now(), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
         mysql.connection.commit()
         message = 'Task successfully created!'
+        return redirect(url_for('task'))
     elif request.method == 'POST':
+        form = {
+            "title": request.form['title'],
+            "description": request.form['description'],
+            "due_date": request.form['due-date'],
+            "task_type": request.form['task-type'],
+        }
         message = 'Please fill all the fields!'
-    return redirect(url_for('task'))
-    # return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, message = '')
-
-    # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # cursor.execute('DELETE FROM Task WHERE id = %s', (task_id,))
-    # mysql.connection.commit()
-    # return "created task bic"
-
-@app.route('/task', methods =['GET', 'POST', 'DELETE'])
-def task():
-    print(request.method)    
+        # return task(message)
+    
     # get task types from db
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT * FROM TaskType')
@@ -107,30 +132,19 @@ def task():
     # get todo tasks from db
     cursor.execute('SELECT * FROM Task WHERE status = %s ORDER BY deadline', (TaskStatus.TODO.value,))
     task_todo = cursor.fetchall()  
-    print("haloo")
-    print(task_todo)
     
     task_headers = {
+        'Mark': ' ',
         'title': 'Title',
         'description': 'Description',
         'status': 'Status',
         'deadline': "Deadline",
         'creation_time': "Created At",
-        'task_type': 'Category'
+        'task_type': 'Category',
+        'Delete': ' '
     }
     
-    if request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form:
-        title = request.form['title']
-        description = request.form['description']
-        due_date = request.form['due-date']
-        task_type = request.form['task-type']
-        
-        cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, now(), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
-        mysql.connection.commit()
-        message = 'Task successfully created!'
-    elif request.method == 'POST':
-        message = 'Please fill all the fields!'
-    return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, message = '')
+    return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, message = message)
 
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
