@@ -74,6 +74,14 @@ def done_task(task_id):
     mysql.connection.commit()
     return redirect(url_for('task'))
 
+@app.route('/task/update/<int:task_id>', methods =['POST'])
+def update_task(task_id):
+    # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    # cursor.execute('UPDATE Task SET status = %s, done_time = now() WHERE id = %s', (TaskStatus.DONE.value, task_id,))
+    # mysql.connection.commit()
+    return "kudur"
+    # return redirect(url_for('task'))
+
 @app.route('/task/delete/<int:task_id>', methods =['POST'])
 def delete_task(task_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -134,6 +142,7 @@ def task(message = ''):
         'creation_time': "Created At",
         'done_time': 'Done At',
         'task_type': 'Category',
+        'update': 'Update',
         'Delete': ' '
     }
     
