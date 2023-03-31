@@ -2,6 +2,7 @@
 import re  
 import os
 from status import TaskStatus
+from functions import *
 # from task_table import TaskTable
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
@@ -184,6 +185,13 @@ def update_task(task_id, message = ''):
 
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT title, done_time - deadline AS latency FROM Task WHERE user_id = %s AND status = %s AND done_time > deadline', (session['userid'], TaskStatus.DONE.value,))
+    tasks = cursor.fetchall() 
+    print(tasks, flush=True)
+    for task in tasks:
+        task['latency'] = microsec_to_datetime(task['latency'])
+    print(tasks, flush=True)
     return "Analysis page"
 
 if __name__ == "__main__":

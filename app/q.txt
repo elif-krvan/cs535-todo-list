@@ -1,5 +1,6 @@
 can we edit done tasks
 can a done task be removed to todo
+table ids 
 
 
 
@@ -7,3 +8,5 @@ can a done task be removed to todo
 --- to do
 check wheter task table is empty, if empty show a message maybe
 only first words are displayed
+update server time
+select date time only in the future
