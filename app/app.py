@@ -80,7 +80,7 @@ def register():
 @app.route('/task/done/<int:task_id>', methods =['POST'])
 def done_task(task_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('UPDATE Task SET status = %s, done_time = now() WHERE id = %s AND user_id = %s', (TaskStatus.DONE.value, task_id, session['userid'],))
+    cursor.execute('UPDATE Task SET status = %s, done_time =  CONVERT_TZ(now(), \'UTC\',  \'Europe/Istanbul\') WHERE id = %s AND user_id = %s', (TaskStatus.DONE.value, task_id, session['userid'],))
     mysql.connection.commit()
     
     return redirect(url_for('task'))
@@ -112,7 +112,7 @@ def task(message = ''):
         task_type = request.form['task-type']
         
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, now(), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
+        cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, CONVERT_TZ(now(), \'UTC\',  \'Europe/Istanbul\'), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
         mysql.connection.commit()
         message = 'Task successfully created!'
         return redirect(url_for('task'))
@@ -187,11 +187,16 @@ def update_task(task_id, message = ''):
 def analysis():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT title, done_time - deadline AS latency FROM Task WHERE user_id = %s AND status = %s AND done_time > deadline', (session['userid'], TaskStatus.DONE.value,))
-    tasks = cursor.fetchall() 
-    print(tasks, flush=True)
-    for task in tasks:
-        task['latency'] = microsec_to_datetime(task['latency'])
-    print(tasks, flush=True)
+    analysis1 = cursor.fetchall() 
+    print(analysis1, flush=True)
+    for task in analysis1:
+        task['latency'] = seconds_to_time(task['latency'])
+    print(analysis1, flush=True)
+    
+    cursor.execute('SELECT AVG(done_time - creation_time) AS average_time FROM Task WHERE user_id = %s AND status = %s', (session['userid'], TaskStatus.DONE.value,))
+    analysis2 = cursor.fetchall()
+    analysis2[0]['average_time'] = avg_to_time(analysis2[0]['average_time'])
+    print(analysis2, flush=True)
     return "Analysis page"
 
 if __name__ == "__main__":

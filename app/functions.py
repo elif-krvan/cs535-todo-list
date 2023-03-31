@@ -1,22 +1,37 @@
 import datetime
+from decimal import Decimal
 
-def microsec_to_datetime(microsec):
-    diff = datetime.timedelta(microseconds=microsec)
+day_secs = 24 * 60 * 60
+
+def seconds_to_time(secs):
+    diff = datetime.timedelta(seconds=secs)
     days = diff.days
     
     hours, remainder = divmod(diff.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     
-    latency = ""
+    return time_to_str(days, hours, minutes, seconds)
+
+def avg_to_time(secs):
+    secs = Decimal(secs)
+    
+    days, day_reminder = divmod(secs, day_secs)
+    hours, remainder = divmod(day_reminder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    
+    return time_to_str(days, hours, minutes, seconds)    
+
+def time_to_str(days, hours, minutes, seconds):
+    result = ""
     
     if days > 0:
-        latency += str(days) + " days "
+        result += str(days) + " days "
     if hours > 0:
-        latency += str(hours) + " hours "
+        result += str(hours) + " hours "
     if minutes > 0:
-        latency += str(minutes) + " minutes "
+        result += str(minutes) + " minutes "
     if seconds > 0:
-        latency += str(seconds) + " seconds "
+        result += str(seconds) + " seconds "
     
-    return latency
+    return result
     
