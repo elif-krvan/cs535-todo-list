@@ -1,0 +1,41 @@
+<script>
+
+    if ( window.history.replaceState ) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    
+</script>
+    
+    <form action="{{ url_for('update_task', task_id = task.id) }}" method="post">
+        {% if message is defined and message %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endif %}
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{task.title}}>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{task.description}}>
+        </div>      
+        <div class="form-group">
+            <label for="due-date">Due Date:</label>
+            <input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value={{task.deadline}}>
+        </div>
+        <div class="form-group">
+            <label for="task-type">Task Type:</label>
+            <select name="task-type" method="GET" action="/">
+                {% for t in task_types %}
+                    <option value="{{t.type}}" {% if task.task_type != '' and t.type == task.task_type %}selected{% endif %}>{{t.type}}</option>"
+                {% endfor %}
+            </select>
+        </div>     
+        <button type="submit" class="btn btn-primary">Update Task</button>
+    </form>
+    <br>
+    
+    <form action="{{ url_for('logout') }}" method="get">
+    <button class="btn btn-primary">Logout</button>
+    </form>
+    
+    

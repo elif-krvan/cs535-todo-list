@@ -34,11 +34,10 @@ if ( window.history.replaceState ) {
 </form>
 <br>
 
-
 <table>
 	<tr>
 		{% for head in task_headers.values() %}
-			{% if head != 'Done At' and head != 'Update'%}<th>{{head}}</th>{% endif %}
+			{% if head != 'Done At' %}<th>{{head}}</th>{% endif %}
 		{% endfor %}
 	</tr>
 
@@ -50,23 +49,28 @@ if ( window.history.replaceState ) {
 				</form>
 			</td>
 			{% for key in task_headers.keys() %}
-				{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
+				{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update'%}<td>{{task[key]}}</td>{% endif %}				
 			{% endfor %}
+			<td>
+				<form action="{{ url_for('update_task', task_id = task.id) }}" method="post">
+				<button class="btn btn-primary" name="update">Update</button>
+				</form>
+			</td>
 			<td>
 				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
 				<button class="btn btn-primary">Delete</button>
 				</form>
 			</td>
 	  	</tr>
-	{% endfor %}
-	
-  </table>
+	{% endfor %}	
+</table>
+
   <br>
 
   <table>
 	<tr>
 		{% for key in task_headers.keys() %}
-			{% if key != 'Mark'  %}<th>{{task_headers[key]}}</th>{% endif %}
+			{% if key != 'Mark' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
 		{% endfor %}
 	</tr>
 
@@ -76,11 +80,6 @@ if ( window.history.replaceState ) {
 				{% if task_headers[key] != ' ' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
 			{% endfor %}
 			<td>
-				<form action="{{ url_for('update_task', task_id = task.id) }}" method="post">
-				<button class="btn btn-primary">Update</button>
-				</form>
-			</td>
-			<td>
 				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
 				<button class="btn btn-primary">Delete</button>
 				</form>
@@ -93,7 +92,7 @@ if ( window.history.replaceState ) {
 
 
 
-<form action="{{ url_for('register') }}" method="get">
-<button class="btn btn-primary">Register</button>
+<form action="{{ url_for('logout') }}" method="get">
+<button class="btn btn-primary">Logout</button>
 </form>
 

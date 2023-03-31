@@ -40,6 +40,14 @@ def login():
             message = 'Please enter correct email / password !'
     return render_template('login.html', message = message)
 
+@app.route('/logout', methods =['GET', 'POST'])
+def logout():
+    session['loggedin'] = False
+    session['userid'] = None
+    session['username'] = None
+    session['email'] = None
+    
+    return redirect('/')
 
 @app.route('/register', methods =['GET', 'POST'])
 def register():
@@ -70,17 +78,10 @@ def register():
 @app.route('/task/done/<int:task_id>', methods =['POST'])
 def done_task(task_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('UPDATE Task SET status = %s, done_time = now() WHERE id = %s', (TaskStatus.DONE.value, task_id,))
+    cursor.execute('UPDATE Task SET status = %s, done_time = now() WHERE id = %s AND user_id = %s', (TaskStatus.DONE.value, task_id, session['userid'],))
     mysql.connection.commit()
     return redirect(url_for('task'))
 
-@app.route('/task/update/<int:task_id>', methods =['POST'])
-def update_task(task_id):
-    # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # cursor.execute('UPDATE Task SET status = %s, done_time = now() WHERE id = %s', (TaskStatus.DONE.value, task_id,))
-    # mysql.connection.commit()
-    return "kudur"
-    # return redirect(url_for('task'))
 
 @app.route('/task/delete/<int:task_id>', methods =['POST'])
 def delete_task(task_id):
@@ -126,11 +127,11 @@ def task(message = ''):
     task_types = cursor.fetchall()   
     
     # get todo tasks from db
-    cursor.execute('SELECT * FROM Task WHERE status = %s ORDER BY deadline', (TaskStatus.TODO.value,))
+    cursor.execute('SELECT * FROM Task WHERE status = %s AND user_id = %s ORDER BY deadline', (TaskStatus.TODO.value, session['userid'], ))
     task_todo = cursor.fetchall()
     
     # get done tasks from db  
-    cursor.execute('SELECT * FROM Task WHERE status = %s ORDER BY done_time DESC', (TaskStatus.DONE.value,))
+    cursor.execute('SELECT * FROM Task WHERE status = %s AND user_id = %s ORDER BY done_time DESC', (TaskStatus.DONE.value, session['userid'], ))
     task_done = cursor.fetchall()
     
     task_headers = {
@@ -147,6 +148,55 @@ def task(message = ''):
     }
     
     return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, task_done = task_done, message = message)
+
+@app.route('/update_task/<int:task_id>', methods =['GET', 'POST', 'DELETE'])
+def update_task(task_id, message = ''):
+    form = {
+            "title": '',
+            "description": '',
+            "due_date": '',
+            "task_type": '',
+        }
+    
+    if (request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form
+        and request.form['due-date'] != '' and request.form['title'] != '' and request.form['description'] != ''):
+        title = request.form['title']
+        description = request.form['description']
+        due_date = request.form['due-date']
+        task_type = request.form['task-type']
+        
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('UPDATE Task SET title = %s, description = %s, deadline = %s,  task_type = %s WHERE id = %s)', (title, description, due_date, task_type, task_id,))
+        mysql.connection.commit()
+        message = 'Task successfully created!'
+        return redirect(url_for('task'))
+
+    
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    
+    # get todo tasks from db
+    cursor.execute('SELECT * FROM Task WHERE id = %s', (task_id, ))
+    task = cursor.fetchone()
+    print(task['deadline'])
+    print("alooo")
+    
+    cursor.execute('SELECT * FROM TaskType')
+    task_types = cursor.fetchall() 
+    
+    task_headers = {
+        'Mark': ' ',
+        'title': 'Title',
+        'description': 'Description',
+        'status': 'Status',
+        'deadline': "Deadline",
+        'creation_time': "Created At",
+        'done_time': 'Done At',
+        'task_type': 'Category',
+        'update': 'Update',
+        'Delete': ' '
+    }
+    
+    return render_template('update_task.html', task = task, task_headers = task_headers, task_types = task_types, form = form, message = message)
 
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
