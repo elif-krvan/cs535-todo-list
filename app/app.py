@@ -159,7 +159,7 @@ def task(message = ''):
     if task_id != -1 and task_id != None:
         cursor.execute('SELECT * FROM Task WHERE id = %s', (task_id,))
         update_task = cursor.fetchone()
-        update_task["deadline"] = update_task["deadline"].strftime('%Y-%m-%d %H:%M:%S')
+        update_task["deadline"] = convert_to_datetime(update_task["deadline"])
     
     return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, task_done = task_done, update_task_id = task_id, update_task = update_task, message = message)
 
@@ -186,6 +186,8 @@ def update_task(task_id, message = ''):
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    
+    # analysis 1
     cursor.execute('SELECT title, done_time - deadline AS latency FROM Task WHERE user_id = %s AND status = %s AND done_time > deadline', (session['userid'], TaskStatus.DONE.value,))
     analysis1 = cursor.fetchall() 
     print(analysis1, flush=True)
@@ -193,10 +195,31 @@ def analysis():
         task['latency'] = seconds_to_time(task['latency'])
     print(analysis1, flush=True)
     
+    # analysis 2
     cursor.execute('SELECT AVG(done_time - creation_time) AS average_time FROM Task WHERE user_id = %s AND status = %s', (session['userid'], TaskStatus.DONE.value,))
     analysis2 = cursor.fetchall()
     analysis2[0]['average_time'] = avg_to_time(analysis2[0]['average_time'])
     print(analysis2, flush=True)
+    
+    # analysis 3
+    cursor.execute('SELECT task_type, COUNT(id) AS count FROM Task WHERE user_id = %s AND status = %s GROUP BY task_type ORDER BY count DESC', (session['userid'], TaskStatus.DONE.value,))
+    analysis3 = cursor.fetchall()
+    print(analysis3, flush=True)
+    
+    # analysis 4
+    cursor.execute('SELECT title, deadline FROM Task WHERE user_id = %s AND status = %s ORDER BY deadline', (session['userid'], TaskStatus.TODO.value,))
+    analysis4 = cursor.fetchall()
+    for task in analysis4:
+        task['deadline'] = convert_to_datetime(task["deadline"])
+    print(analysis4, flush=True)
+    
+    # analysis 5
+    cursor.execute('SELECT title, done_time - creation_time AS completion_time FROM Task WHERE user_id = %s AND status = %s ORDER BY completion_time DESC LIMIT 2', (session['userid'], TaskStatus.DONE.value,))
+    analysis5 = cursor.fetchall() 
+    for task in analysis5:
+        task['completion_time'] = seconds_to_time(task['completion_time'])
+    print(analysis5, flush=True)
+    
     return "Analysis page"
 
 if __name__ == "__main__":

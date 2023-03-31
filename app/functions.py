@@ -34,4 +34,7 @@ def time_to_str(days, hours, minutes, seconds):
         result += str(seconds) + " seconds "
     
     return result
+
+def convert_to_datetime(obj):
+    return obj.strftime('%Y-%m-%d %H:%M:%S')
     

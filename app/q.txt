@@ -1,9 +1,8 @@
 can we edit done tasks
 can a done task be removed to todo
 table ids 
-
-
-
+should titles be unique
+can users add tasks whose deadline has already passed
 
 --- to do
 check wheter task table is empty, if empty show a message maybe
