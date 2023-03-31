@@ -48,14 +48,52 @@ if ( window.history.replaceState ) {
 				<button class="btn btn-primary">Done</button>
 				</form>
 			</td>
-			{% for key in task_headers.keys() %}
-				{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update'%}<td>{{task[key]}}</td>{% endif %}				
-			{% endfor %}
-			<td>
-				<form action="{{ url_for('update_task', task_id = task.id) }}" method="post">
-				<button class="btn btn-primary" name="update">Update</button>
-				</form>
-			</td>
+			
+			
+			{% if update_task.id == task.id %}	
+			<form action="{{ url_for('update_task', task_id = update_task_id) }}" method="post">
+				<td>
+					<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{update_task.title}}>
+				</td>
+				<td>
+					<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{update_task.description}}>
+				</td> 
+				<td>
+					{{task.status}}						
+				</td>     
+				<td>
+					<input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value="{{update_task.deadline}}">
+				</td>
+				<td>
+					{{update_task.deadline}}					
+				</td>
+				<td>
+					<select name="task-type" method="GET" action="/">
+						{% for t in task_types %}
+							<option value="{{t.type}}" {% if update_task.task_type != '' and t.type == update_task.task_type %}selected{% endif %}>{{t.type}}</option>"
+						{% endfor %}
+					</select>
+				</td> 
+				<td>    
+				<button type="submit" class="btn btn-primary">Save</button>
+				<td> 
+			</form>
+
+			{% else %}
+				{% for key in task_headers.keys() %}
+					{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update'%}
+						<td>
+							{{task[key]}}						
+						</td>
+					{% endif %}				
+				{% endfor %}
+				<td>
+					<form action="{{ url_for('task', task_id = task.id) }}" method="post">
+					<button class="btn btn-primary" value={{task.id}} name="update">Update</button>
+					</form>
+				</td>
+			{% endif %}
+			
 			<td>
 				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
 				<button class="btn btn-primary">Delete</button>
