@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@600&family=Open+Sans:wght@400;600&display=swap');
+:root {
+    --blue: #1e90ff;
+    --white: #ffffff;
+    --bg: rgba(148, 92, 252, 0.453)
+}
+
+body {
+    font-size: 3vmin;
+    font-family: 'Open Sans', sans-serif;
+    /* background-color: rgba(251, 248, 255, 0.453); */
+    /* background-color: rgba(207, 181, 255, 0.453); */
+    background-color: rgba(148, 92, 252, 0.453);
+    letter-spacing: 1px;
+
+}
+
+h1 {
+    padding-top: 5vmin;
+    font-size: 3.3vmin;
+    text-align: center;
+    font-family: 'Merriweather Sans', sans-serif;
+    line-height: 5vmin;
+    letter-spacing: 0.3vmin;
+    text-shadow: 1px 1px 2px #313030;
+}
+
+label {
+    font-weight: bold;
+    font-size: 2.4vmin;
+}
+
+input, select {
+    width: 100%;
+    padding: 1.2vmin 1.5vmin;
+    margin: 1.2vmin 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 2.8vmin;
+}
+
+.btn {
+    font-size: 2.2vmin;
+    padding: 1.2vmin 2vmin;
+    margin: 0 auto;
+    display: block;
+
+    background-color: rgb(126, 80, 151);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    /* padding: 15px 32px; */
+    text-align: center;
+    text-decoration: none;
+    /* display: inline-block; */
+    font-size: 16px;
+    /* margin: 4px 2px; */
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: rgb(91, 64, 141);
+}

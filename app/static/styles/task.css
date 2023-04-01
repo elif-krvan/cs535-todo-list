@@ -1,0 +1,58 @@
+body {
+    font-size: 2.2vmin;
+}
+
+.tasks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* height: 60vh; */
+}
+.create-task {
+    margin-top: 3vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vmin;
+    padding: 1vmin 6vmin;
+    flex-direction: column;
+    border-radius: 12px;
+    /* border: 10px solid #ccc; */
+}
+
+.create-task-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    padding: 0 6vmin;
+    flex-direction: row;
+}
+
+.form-group {
+    padding: 0 1vmin;
+}
+
+h3 {
+    font-size: 3vmin;
+    font-weight: 600;
+}
+
+label {
+    font-size: 2.3vmin;
+}
+
+input, select {
+    font-size: 2.1vmin;
+}
+
+#create-label {
+    color: rgba(148, 92, 252, 0);
+}
+
+.alert {
+    color: red;
+    font-weight: bold;
+    padding: 2vmin;
+}

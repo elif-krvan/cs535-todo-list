@@ -1,137 +1,161 @@
-<script>
 
-if ( window.history.replaceState ) {
-	window.history.replaceState(null, null, window.location.href);
-}
 
-</script>
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
 
-<form action="{{ url_for('task') }}" method="post">
-	{% if message is defined and message %}
-		<div class="alert alert-warning">{{ message }}</div>
-	{% endif %}
-	<div class="form-group">
-		<label for="title">Title:</label>
-		<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{form.title}}>
-	</div>
-	<div class="form-group">
-		<label for="description">Description:</label>
-		<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{form.description}}>
-	</div>      
-	<div class="form-group">
-		<label for="due-date">Due Date:</label>
-		<input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value={{form.due_date}}>
-	</div>
-    <div class="form-group">
-		<label for="task-type">Task Type:</label>
-        <select name="task-type" method="GET" action="/">
-            {% for t in task_types %}
-                <option value="{{t.type}}" {% if form.task_type != '' and t.type == form.task_type %}selected{% endif %}>{{t.type}}</option>"
-            {% endfor %}
-        </select>
-	</div>     
-	<button type="submit" class="btn btn-primary">Create Task</button>
-</form>
-<br>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/task.css') }}">
+	</head>
 
-<table>
-	<tr>
-		{% for head in task_headers.values() %}
-			{% if head != 'Done At' %}<th>{{head}}</th>{% endif %}
-		{% endfor %}
-	</tr>
+	<body>
+		<h1>My Tasks</h1>
+		<script>
 
-	{% for task in task_todo %}
-		<tr>
-			<td>
-				<form action="{{ url_for('done_task', task_id = task.id) }}" method="post">
-				<button class="btn btn-primary">Done</button>
+			if ( window.history.replaceState ) {
+				window.history.replaceState(null, null, window.location.href);
+			}
+			
+		</script>
+
+		<div class="tasks">
+			<div class="create-task">
+				<h3>Create Task</h3>		
+				<form class="create-task-form" action="{{ url_for('task') }}" method="post">
+					
+					<div class="form-group">
+						<label for="title">Title:</label>
+						<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{form.title}}>
+					</div>
+					<div class="form-group">
+						<label for="description">Description:</label>
+						<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{form.description}}>
+					</div>      
+					<div class="form-group">
+						<label for="due-date">Due Date:</label>
+						<input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value={{form.due_date}}>
+					</div>
+					<div class="form-group">
+						<label for="task-type">Task Type:</label>
+						<select name="task-type" method="GET" action="/">
+							{% for t in task_types %}
+								<option value="{{t.type}}" {% if form.task_type != '' and t.type == form.task_type %}selected{% endif %}>{{t.type}}</option>"
+							{% endfor %}
+						</select>
+					</div>     
+					<div class="form-group">
+						<label for="task-type" id="create-label">gdfg</label>
+						<button type="submit" class="btn btn-primary">Create Task</button>
+					</div>					
 				</form>
-			</td>
+				{% if message is defined and message %}
+					<div class="alert alert-warning">{{ message }}</div>
+				{% endif %} 
+			</div>
 			
+			<table>
+				<tr>
+					{% for head in task_headers.values() %}
+						{% if head != 'Done At' %}<th>{{head}}</th>{% endif %}
+					{% endfor %}
+				</tr>
 			
-			{% if update_task.id == task.id %}	
-			<form action="{{ url_for('update_task', task_id = update_task_id) }}" method="post">
-				<td>
-					<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{update_task.title}}>
-				</td>
-				<td>
-					<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{update_task.description}}>
-				</td> 
-				<td>
-					{{task.status}}						
-				</td>     
-				<td>
-					<input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value="{{update_task.deadline}}">
-				</td>
-				<td>
-					{{update_task.deadline}}					
-				</td>
-				<td>
-					<select name="task-type" method="GET" action="/">
-						{% for t in task_types %}
-							<option value="{{t.type}}" {% if update_task.task_type != '' and t.type == update_task.task_type %}selected{% endif %}>{{t.type}}</option>"
-						{% endfor %}
-					</select>
-				</td> 
-				<td>    
-				<button type="submit" class="btn btn-primary">Save</button>
-				<td> 
-			</form>
-
-			{% else %}
-				{% for key in task_headers.keys() %}
-					{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update'%}
+				{% for task in task_todo %}
+					<tr>
 						<td>
-							{{task[key]}}						
+							<form action="{{ url_for('done_task', task_id = task.id) }}" method="post">
+							<button class="btn btn-primary">Done</button>
+							</form>
 						</td>
-					{% endif %}				
-				{% endfor %}
-				<td>
-					<form action="{{ url_for('task', task_id = task.id) }}" method="post">
-					<button class="btn btn-primary" value={{task.id}} name="update">Update</button>
-					</form>
-				</td>
-			{% endif %}
+						
+						
+						{% if update_task.id == task.id %}	
+						<form action="{{ url_for('update_task', task_id = update_task_id) }}" method="post">
+							<td>
+								<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{update_task.title}}>
+							</td>
+							<td>
+								<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{update_task.description}}>
+							</td> 
+							<td>
+								{{task.status}}						
+							</td>     
+							<td>
+								<input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value="{{update_task.deadline}}">
+							</td>
+							<td>
+								{{update_task.deadline}}					
+							</td>
+							<td>
+								<select name="task-type" method="GET" action="/">
+									{% for t in task_types %}
+										<option value="{{t.type}}" {% if update_task.task_type != '' and t.type == update_task.task_type %}selected{% endif %}>{{t.type}}</option>"
+									{% endfor %}
+								</select>
+							</td> 
+							<td>    
+							<button type="submit" class="btn btn-primary">Save</button>
+							<td> 
+						</form>
 			
-			<td>
-				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
-				<button class="btn btn-primary">Delete</button>
-				</form>
-			</td>
-	  	</tr>
-	{% endfor %}	
-</table>
+						{% else %}
+							{% for key in task_headers.keys() %}
+								{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update'%}
+									<td>
+										{{task[key]}}						
+									</td>
+								{% endif %}				
+							{% endfor %}
+							<td>
+								<form action="{{ url_for('task', task_id = task.id) }}" method="post">
+								<button class="btn btn-primary" value={{task.id}} name="update">Update</button>
+								</form>
+							</td>
+						{% endif %}
+						
+						<td>
+							<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
+							<button class="btn btn-primary">Delete</button>
+							</form>
+						</td>
+						</tr>
+				{% endfor %}	
+			</table>
+			
+				<br>
+			
+				<table>
+				<tr>
+					{% for key in task_headers.keys() %}
+						{% if key != 'Mark' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
+					{% endfor %}
+				</tr>
+			
+				{% for task in task_done %}
+					<tr>
+						{% for key in task_headers.keys() %}
+							{% if task_headers[key] != ' ' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
+						{% endfor %}
+						<td>
+							<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
+							<button class="btn btn-primary">Delete</button>
+							</form>
+						</td>
+						</tr>
+				{% endfor %}
+				
+				</table>
+			
+			<form action="{{ url_for('analysis') }}" method="get">
+			<button class="btn btn-primary">Analysis</button>
+			</form>
+			
+			<form action="{{ url_for('logout') }}" method="get">
+			<button class="btn btn-primary">Logout</button>
+			</form>
+		</div>
+	</body>
+</html>
 
-  <br>
 
-  <table>
-	<tr>
-		{% for key in task_headers.keys() %}
-			{% if key != 'Mark' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
-		{% endfor %}
-	</tr>
-
-	{% for task in task_done %}
-		<tr>
-			{% for key in task_headers.keys() %}
-				{% if task_headers[key] != ' ' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
-			{% endfor %}
-			<td>
-				<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
-				<button class="btn btn-primary">Delete</button>
-				</form>
-			</td>
-	  	</tr>
-	{% endfor %}
-	
-  </table>
-
-<form action="{{ url_for('analysis') }}" method="get">
-<button class="btn btn-primary">Analysis</button>
-</form>
-
-<form action="{{ url_for('logout') }}" method="get">
-<button class="btn btn-primary">Logout</button>
-</form>
 
