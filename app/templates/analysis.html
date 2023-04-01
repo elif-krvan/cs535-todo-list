@@ -1,0 +1,68 @@
+<h3>Analysis 1: Latency of the tasks that were completed after their deadlines</h3>
+<table>
+	<tr>
+		{% for key in analysis1_headers.keys() %}
+			<th>{{analysis1_headers[key]}}</th>
+		{% endfor %}
+	</tr>
+
+	{% for task in analysis1 %}
+		<tr>
+			{% for key in analysis1_headers.keys() %}
+				<td>{{task[key]}}</td>			
+			{% endfor %}
+	  	</tr>
+	{% endfor %}
+	
+</table>
+
+<h3>Analysis 2: Average task completion time</h3>
+<p>{{analysis2[0].average_time}}</p>
+
+<h3>Analysis 3: Number of the completed tasks per task type</h3>
+<table>
+
+	{% for task in analysis3 %}
+		<tr>
+            <th>{{task.task_type}}</th>
+			<td>{{task.count}}</td>			
+	  	</tr>
+	{% endfor %}
+	
+</table>
+
+<h3>Analysis 4: Deadlines of the uncompleted tasks</h3>
+<table>
+	<tr>
+		{% for key in analysis4_headers.keys() %}
+			<th>{{analysis4_headers[key]}}</th>
+		{% endfor %}
+	</tr>
+
+	{% for task in analysis4 %}
+		<tr>
+			{% for key in analysis4_headers.keys() %}
+				<td>{{task[key]}}</td>			
+			{% endfor %}
+	  	</tr>
+	{% endfor %}
+	
+</table>
+
+<h3>Analysis 5: Task completion time of the top 2 completed tasks that took the most time</h3>
+<table>
+	<tr>
+		{% for key in analysis5_headers.keys() %}
+			<th>{{analysis5_headers[key]}}</th>
+		{% endfor %}
+	</tr>
+
+	{% for task in analysis5 %}
+		<tr>
+			{% for key in analysis5_headers.keys() %}
+				<td>{{task[key]}}</td>			
+			{% endfor %}
+	  	</tr>
+	{% endfor %}
+	
+</table>

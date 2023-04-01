@@ -195,6 +195,11 @@ def analysis():
         task['latency'] = seconds_to_time(task['latency'])
     print(analysis1, flush=True)
     
+    analysis1_headers = {
+        'title': 'Task Title',
+        'latency': 'Latency'
+    }
+    
     # analysis 2
     cursor.execute('SELECT AVG(done_time - creation_time) AS average_time FROM Task WHERE user_id = %s AND status = %s', (session['userid'], TaskStatus.DONE.value,))
     analysis2 = cursor.fetchall()
@@ -213,6 +218,11 @@ def analysis():
         task['deadline'] = convert_to_datetime(task["deadline"])
     print(analysis4, flush=True)
     
+    analysis4_headers = {
+        'title': 'Task Title',
+        'deadline': 'Deadline'
+    }
+    
     # analysis 5
     cursor.execute('SELECT title, done_time - creation_time AS completion_time FROM Task WHERE user_id = %s AND status = %s ORDER BY completion_time DESC LIMIT 2', (session['userid'], TaskStatus.DONE.value,))
     analysis5 = cursor.fetchall() 
@@ -220,7 +230,12 @@ def analysis():
         task['completion_time'] = seconds_to_time(task['completion_time'])
     print(analysis5, flush=True)
     
-    return "Analysis page"
+    analysis5_headers = {
+        'title': 'Task Title',
+        'completion_time': 'Completion Time'
+    }
+    
+    return render_template('analysis.html', analysis1 = analysis1, analysis1_headers = analysis1_headers, analysis2 = analysis2, analysis3 = analysis3, analysis4 = analysis4, analysis4_headers = analysis4_headers, analysis5 = analysis5, analysis5_headers = analysis5_headers)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
