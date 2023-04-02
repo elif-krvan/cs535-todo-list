@@ -2,6 +2,10 @@ body {
     font-size: 2.2vmin;
 }
 
+h1 {
+    padding-top: 3vmin;
+}
+
 .tasks {
     display: flex;
     justify-content: center;
@@ -34,11 +38,6 @@ body {
     padding: 0 1vmin;
 }
 
-h3 {
-    font-size: 3vmin;
-    font-weight: 600;
-}
-
 label {
     font-size: 2.3vmin;
 }
@@ -59,6 +58,7 @@ input, select {
 
 .task-table {
     margin-top: 2vmin;
+    margin-bottom: 2vmin;
 }
 
 .icon-btn {
@@ -100,16 +100,20 @@ table {
     border-collapse: collapse;
 }
 
-th {
-    text-align: left;
-}
-
 table td, table th {
     border: 1px solid #ddd;
-    padding: 8px;
-  }
+    padding: 1vmin 2vmin;
+}
+
+table th {
+    text-align: left;
+    background-color: rgb(91, 64, 141);
+    color: rgb(244, 238, 255);
+    padding: 1.8vmin 2vmin;
+}
 
 tr:nth-child(even){background-color: #f2f2f2;}
+tr:nth-child(odd){background-color: rgb(236, 225, 255)}
 
 #done-btn-icon {
     width: 25px;
@@ -120,8 +124,28 @@ tr:nth-child(even){background-color: #f2f2f2;}
 }
 
 #done-btn {
-    width: 50px;
-    height: 50px;
-    background-color: rgba(148, 92, 252, 0);
-    color: rgba(148, 92, 252, 0);
+    /* width: 50px;
+    height: 50px; */
+    background-color: rgb(31, 176, 21);
+    /* color: rgba(148, 92, 252, 0); */
+}
+
+#done-btn:hover {
+    background-color: rgb(48, 216, 36);
+}
+
+#save-btn {
+    background-color: rgb(0, 128, 255);
+}
+
+#save-btn:hover {
+    background-color: rgb(67, 67, 255);
+}
+
+#delete-btn:hover, #edit-btn:hover {
+    background-color: rgb(195, 170, 241);
+}
+
+.done-tasks {
+    margin-bottom: 5vmin;
 }

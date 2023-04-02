@@ -9,6 +9,8 @@
 	</head>
 
 	<body>
+		{% include 'nav.html' %}
+		<br>
 		<h1>My Tasks</h1>
 		<script>
 
@@ -66,7 +68,7 @@
 						<tr>
 							<td>
 								<form action="{{ url_for('done_task', task_id = task.id) }}" method="post">
-								<button id="done-btn" class="btn btn-primary"><div id="done-btn-icon">Done</div></button>
+								<button id="done-btn" class="btn btn-primary">Done</div></button>
 								</form>
 							</td>
 							
@@ -96,7 +98,7 @@
 										</select>
 									</td> 
 									<td>    
-										<button type="submit" class="btn btn-primary">Save</button>
+										<button id="save-btn" type="submit" class="btn btn-primary">Save</button>
 									</td> 
 								</form>				
 							{% else %}							
@@ -123,30 +125,29 @@
 					{% endfor %}	
 				</table>
 			</div>
-			
-				<br>
-			
+			<div class="done-tasks">
+				<h3>Completed Tasks</h3>
 				<table>
-				<tr>
-					{% for key in task_headers.keys() %}
-						{% if key != 'Mark' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
-					{% endfor %}
-				</tr>
-			
-				{% for task in task_done %}
 					<tr>
 						{% for key in task_headers.keys() %}
-							{% if task_headers[key] != ' ' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
+							{% if key != 'Mark' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
 						{% endfor %}
-						<td>
-							<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
-							<button class="btn btn-primary">Delete</button>
-							</form>
-						</td>
-						</tr>
-				{% endfor %}
+					</tr>
 				
+					{% for task in task_done %}
+						<tr>
+							{% for key in task_headers.keys() %}
+								{% if task_headers[key] != ' ' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
+							{% endfor %}
+							<td>
+								<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">
+									<button id="delete-btn" class="btn icon-btn btn-primary">Delete</button>
+								</form>
+							</td>
+							</tr>
+					{% endfor %}				
 				</table>
+			</div>
 			
 			<form action="{{ url_for('analysis') }}" method="get">
 			<button class="btn btn-primary">Analysis</button>
