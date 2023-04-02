@@ -4,8 +4,7 @@
     --bg: rgba(148, 92, 252, 0.453);
 }
 
-body {
-    
+body {    
     padding: 0;
     margin: 0;
     font-size: 3vmin;
@@ -77,6 +76,7 @@ textarea:focus, input:focus {
     outline: none;
     border: 2px solid rgb(91, 64, 141);
 }
+
 td {
     margin: 0;
     /* padding: 2vmin; */
@@ -101,3 +101,10 @@ table th {
 
 tr:nth-child(even){background-color: #f2f2f2;}
 tr:nth-child(odd){background-color: rgb(236, 225, 255)}
+
+.alert {
+    color: red;
+    font-weight: bold;
+    padding: 1vmin;
+    font-size: 2.2vmin;
+}

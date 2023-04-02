@@ -13,9 +13,6 @@
 		<div class="login-card">
 			<div class="login-card-small">
 				<form action="{{ url_for('login') }}" method="post">
-					{% if message is defined and message %}
-						<div class="alert alert-warning">{{ message }}</div>
-					{% endif %}
 					<div class="form-group">
 						<label for="username">Username</label>
 						<br>
@@ -25,7 +22,10 @@
 						<label for="password">Password</label>
 						<br>
 						<input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-					</div> 
+					</div>
+					{% if message is defined and message %}
+						<div class="alert alert-warning">{{ message }}</div>
+					{% endif %} 
 					<button id="login-btn" type="submit" class="btn btn-primary">Login</button>
 				</form>
 

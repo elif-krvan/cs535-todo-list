@@ -50,12 +50,6 @@ input, select {
     color: rgba(148, 92, 252, 0);
 }
 
-.alert {
-    color: red;
-    font-weight: bold;
-    padding: 3vmin;
-}
-
 .task-table {
     margin-top: 2vmin;
     margin-bottom: 2vmin;

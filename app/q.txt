@@ -7,5 +7,7 @@ can users add tasks whose deadline has already passed
 --- to do
 check wheter task table is empty, if empty show a message maybe
 only first words are displayed
-update server time
-select date time only in the future
++update server time
+select date time only in the future?
+message vs alert
+check if analysis is correct

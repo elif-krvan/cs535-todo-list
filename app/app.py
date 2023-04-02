@@ -38,7 +38,7 @@ def is_user_loggedin():
 
 @app.route('/login', methods =['GET', 'POST'])
 def login():
-    message = ''
+    message = request.args.get('message')
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
@@ -73,22 +73,21 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM User WHERE username = % s', (username, ))
-        account = cursor.fetchone()
-        if account:
-            message = 'Choose a different username!'
-  
-        elif not username or not password or not email:
+        if not username or not password or not email:
             message = 'Please fill out the form!'
-
         else:
-            cursor.execute('INSERT INTO User (id, username, email, password) VALUES (NULL, % s, % s, % s)', (username, email, password,))
-            mysql.connection.commit()
-            message = 'User successfully created!'
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM User WHERE username = % s', (username, ))
+            account = cursor.fetchone()
+            if account:
+                message = 'Choose a different username!'
+            else:
+                cursor.execute('INSERT INTO User (id, username, email, password) VALUES (NULL, % s, % s, % s)', (username, email, password,))
+                mysql.connection.commit()
+                message = 'User successfully created!'
+                return redirect(url_for('login', message = message))
 
     elif request.method == 'POST':
-
         message = 'Please fill all the fields!'
     return render_template('register.html', message = message)
 
@@ -110,20 +109,10 @@ def delete_task(task_id):
 
 @app.route('/task', methods =['GET', 'POST', 'DELETE'])
 def task(message = ''):
-    # redirect_login()
-    # try:
-    #     print("hey")
-    #     print(session['userid'], flush=True)
-    #     if session['loggedin'] == False or session['userid'] == None:
-    #         return redirect(url_for('login'))
-    #     else:
-    #         print("\nWTF\n", flush=True)
-    # except:
-    #     print("An exception occurred WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW")
-    #     # Redirect to the login page in case of an exception
-    #     return redirect(url_for('login'))
-    # print("ALOOOOOO", flush=True)
     task_id = request.args.get('task_id')
+    message = request.args.get('message')
+    print("alo", flush=True)
+    print(message, flush=True)
     
     form = {
             "title": '',
