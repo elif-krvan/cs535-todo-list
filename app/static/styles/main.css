@@ -26,6 +26,11 @@ h1 {
     text-shadow: 1px 1px 2px #313030;
 }
 
+h3 {
+    text-align: center;
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
 label {
     font-weight: bold;
     font-size: 2.4vmin;
@@ -63,4 +68,9 @@ input, select {
 
 .btn:hover {
     background-color: rgb(91, 64, 141);
+}
+
+textarea:focus, input:focus {
+    outline: none;
+    border: 2px solid rgb(91, 64, 141);
 }

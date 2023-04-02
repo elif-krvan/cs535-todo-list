@@ -17,7 +17,22 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'cs353hw4db'
   
-mysql = MySQL(app)  
+mysql = MySQL(app) 
+
+# List of endpoints that should be excluded from the login check
+EXCLUDED_ENDPOINTS = ['/login', '/register']
+
+@app.before_request
+def require_login():
+    if request.endpoint not in EXCLUDED_ENDPOINTS and not is_user_loggedin():
+        # Check if the user is already on the login page
+        if request.endpoint != 'login' and request.endpoint != 'register':
+            # Check if the request is for a static file
+            if not request.path.startswith('/static'):
+                return redirect(url_for('login'))
+    
+def is_user_loggedin():
+    return 'userid' in session and 'loggedin' in session and session['loggedin'] == True
 
 @app.route('/')
 
@@ -95,6 +110,19 @@ def delete_task(task_id):
 
 @app.route('/task', methods =['GET', 'POST', 'DELETE'])
 def task(message = ''):
+    # redirect_login()
+    # try:
+    #     print("hey")
+    #     print(session['userid'], flush=True)
+    #     if session['loggedin'] == False or session['userid'] == None:
+    #         return redirect(url_for('login'))
+    #     else:
+    #         print("\nWTF\n", flush=True)
+    # except:
+    #     print("An exception occurred WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW")
+    #     # Redirect to the login page in case of an exception
+    #     return redirect(url_for('login'))
+    # print("ALOOOOOO", flush=True)
     task_id = request.args.get('task_id')
     
     form = {
@@ -236,6 +264,20 @@ def analysis():
     }
     
     return render_template('analysis.html', analysis1 = analysis1, analysis1_headers = analysis1_headers, analysis2 = analysis2, analysis3 = analysis3, analysis4 = analysis4, analysis4_headers = analysis4_headers, analysis5 = analysis5, analysis5_headers = analysis5_headers)
+
+def redirect_login():
+    try:
+        print("hey")
+        print(session['userid'], flush=True)
+        if session['loggedin'] == False or session['userid'] == None:
+            return redirect(url_for('login'))
+        else:
+            print("\nWTF\n", flush=True)
+    except:
+        print("An exception occurred WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW")
+        # Redirect to the login page in case of an exception
+        return redirect(url_for('login'))
+    
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))

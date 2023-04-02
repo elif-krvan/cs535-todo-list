@@ -54,5 +54,74 @@ input, select {
 .alert {
     color: red;
     font-weight: bold;
-    padding: 2vmin;
+    padding: 3vmin;
+}
+
+.task-table {
+    margin-top: 2vmin;
+}
+
+.icon-btn {
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    width: 35px;
+    height: 35px;
+    background-color: rgba(148, 92, 252, 0);
+    color: rgba(148, 92, 252, 0);
+    background-size: 75%;
+}
+
+#delete-btn {
+    background-image: url(../img/delete-btn.png);
+    /* background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(148, 92, 252, 0);
+    color: rgba(148, 92, 252, 0);
+    background-size: contain; */
+
+}
+
+#edit-btn {
+    background-image: url(../img/edit-btn2.png);
+}
+
+td {
+    margin: 0;
+    /* padding: 2vmin; */
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+}
+
+table td, table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+#done-btn-icon {
+    width: 25px;
+    height: 25px;
+    border: 2px solid black;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+#done-btn {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(148, 92, 252, 0);
+    color: rgba(148, 92, 252, 0);
 }
