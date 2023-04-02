@@ -80,3 +80,12 @@ textarea:focus, input:focus{
 .btn:hover {
     background-color: rgb(91, 64, 141);
 }
+
+#register-btn {
+    margin-bottom: 2vmin;
+}
+
+.register-card {
+    padding: 0;
+    margin: 5vmin;
+}

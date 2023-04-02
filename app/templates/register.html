@@ -1,23 +1,44 @@
-<form action="{{ url_for('register') }}" method="post">
-	{% if message is defined and message %}
-		<div class="alert alert-warning">{{ message }}</div>
-	{% endif %}
-	<div class="form-group">
-		<label for="username">Username:</label>
-		<input type="text" class="form-control" id="username" name="username" placeholder="Enter name">
-	</div>
-	<div class="form-group">
-		<label for="email">Email:</label>
-		<input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
-	</div>
-	<div class="form-group">
-		<label for="pwd">Password:</label>
-		<input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-	</div>  
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/main.css') }}">
 
-	<button type="submit" class="btn btn-primary">Register</button>		
-</form>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/login.css') }}">
+	</head>
 
-<form action="{{ url_for('login') }}" method="get">
-<button class="btn btn-primary">Login</button>
-</form>
+	<body>
+		<h1>CS353 Spring 2023 <br>
+			Homework 4 <br>
+			Programming Assignment</h1>
+		<div class="login-card register-card">
+			<div class="login-card-small">
+				<form action="{{ url_for('register') }}" method="post">
+					{% if message is defined and message %}
+						<div class="alert alert-warning">{{ message }}</div>
+					{% endif %}
+					<div class="form-group">
+						<label for="username">Username:</label>
+						<input type="text" class="form-control" id="username" name="username" placeholder="Enter name">
+					</div>
+					<div class="form-group">
+						<label for="email">Email:</label>
+						<input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+					</div>
+					<div class="form-group">
+						<label for="pwd">Password:</label>
+						<input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
+					</div>  
+				
+					<button id="register-btn" type="submit" class="btn btn-primary">Register</button>		
+				</form>
+				
+				<form action="{{ url_for('login') }}" method="get">
+					<button class="btn btn-primary">Login</button>
+				</form>
+			</div>
+		</div>
+
+	</body>
+</html>
+
+
