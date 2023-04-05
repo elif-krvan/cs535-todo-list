@@ -51,12 +51,15 @@
 					</div>					
 				</form>
 				{% if message is defined and message %}
-					<div class="alert alert-warning">{{ message }}</div>
+					<div>{{ message }}</div>
 				{% endif %} 
 			</div>
 			
 			<div class="task-table">
 				<h3>My To Do</h3>
+				{% if not task_todo %}
+					<div>{{ "You don't have tasks" }}</div>
+				{% else %}
 				<table>
 					<tr>
 						{% for head in task_headers.values() %}
@@ -76,10 +79,10 @@
 							{% if update_task.id == task.id %}	
 								<form id="update-form" action="{{ url_for('update_task', task_id = update_task_id) }}" method="post">
 									<td>
-										<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value={{update_task.title}}>
+										<input type="title" class="form-control" id="title" name="title" placeholder="Enter task title" value="{{update_task.title}}">
 									</td>
 									<td>
-										<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value={{update_task.description}}>
+										<input type="description" class="form-control" id="description" name="description" placeholder="Enter task desctiprion" value="{{update_task.description}}">
 									</td> 
 									<td>
 										{{task.status}}						
@@ -88,7 +91,7 @@
 										<input type="datetime-local" class="form-control" id="due-date" name="due-date" placeholder="Enter due date" value="{{update_task.deadline}}">
 									</td>
 									<td>
-										{{update_task.deadline}}					
+										{{update_task.creation_time}}					
 									</td>
 									<td>
 										<select name="task-type" method="GET" action="/">
@@ -110,8 +113,8 @@
 									{% endif %}				
 								{% endfor %}
 								<td>
-									<form action="{{ url_for('task', task_id = task.id) }}" method="post">
-										<button id="edit-btn" class="btn icon-btn btn-primary" value={{task.id}} name="update">Update</button>
+									<form action="{{ url_for('task') }}" method="post">
+										<button id="edit-btn" name="update-task-id" class="btn icon-btn btn-primary" value={{task.id}} >Update</button>
 									</form>
 								</td>
 							{% endif %}	
@@ -123,10 +126,14 @@
 							</td>
 						</tr>
 					{% endfor %}	
-				</table>
+				</table>				
+				{% endif %} 
 			</div>
 			<div class="done-tasks">
 				<h3>Completed Tasks</h3>
+				{% if not task_done %}
+					<div>{{ "You don't have completed tasks" }}</div>
+				{% else %}
 				<table>
 					<tr>
 						{% for key in task_headers.keys() %}
@@ -147,6 +154,7 @@
 							</tr>
 					{% endfor %}				
 				</table>
+				{% endif %}
 			</div>
 		</div>
 	</body>

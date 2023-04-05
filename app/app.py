@@ -39,6 +39,7 @@ def is_user_loggedin():
 @app.route('/login', methods =['GET', 'POST'])
 def login():
     message = request.args.get('message')
+    err = request.args.get('err')
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
@@ -50,7 +51,7 @@ def login():
             session['userid'] = user['id']
             session['username'] = user['username']
             session['email'] = user['email']
-            message = 'Logged in successfully!'
+            message = 'Logged in successfull!'
             return redirect(url_for('task'))
         else:
             message = 'Please enter correct email / password !'
@@ -109,10 +110,10 @@ def delete_task(task_id):
 
 @app.route('/task', methods =['GET', 'POST', 'DELETE'])
 def task(message = ''):
-    task_id = request.args.get('task_id')
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    update_task_id = None
+    update_task = None
     message = request.args.get('message')
-    print("alo", flush=True)
-    print(message, flush=True)
     
     form = {
             "title": '',
@@ -128,12 +129,17 @@ def task(message = ''):
         due_date = request.form['due-date']
         task_type = request.form['task-type']
         
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('INSERT INTO Task (id, title, description, status, deadline, creation_time, done_time, user_id, task_type) VALUES (NULL, % s, % s, %s, % s, CONVERT_TZ(now(), \'UTC\',  \'Europe/Istanbul\'), NULL, %s, %s)', (title, description, TaskStatus.TODO.value, due_date, session['userid'], task_type))
         mysql.connection.commit()
         message = 'Task successfully created!'
-        return redirect(url_for('task'))
-    elif request.method == 'POST' and task_id == None:
+        return redirect(url_for('task', message = message))
+    elif (request.method == 'POST' and 'update-task-id' in request.form):
+        update_task_id = request.form['update-task-id']
+        
+        cursor.execute('SELECT * FROM Task WHERE id = %s', (update_task_id,))
+        update_task = cursor.fetchone()
+        update_task["deadline"] = convert_to_datetime(update_task["deadline"])
+    elif request.method == 'POST' and update_task_id == None:
         # if user tried to create a task but failed due to something, store their previous inputs
         form = {
             "title": request.form['title'],
@@ -142,7 +148,6 @@ def task(message = ''):
             "task_type": request.form['task-type'],
         }
         message = 'Please fill all the fields!'
-        # return task(message)
     
     # get task types from db
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -171,17 +176,11 @@ def task(message = ''):
         'Delete': ' '
     }
     
-    # if user clicks on the update button, get the details of the selected task 
-    update_task = {}
-    if task_id != -1 and task_id != None:
-        cursor.execute('SELECT * FROM Task WHERE id = %s', (task_id,))
-        update_task = cursor.fetchone()
-        update_task["deadline"] = convert_to_datetime(update_task["deadline"])
-    
-    return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, task_done = task_done, update_task_id = task_id, update_task = update_task, message = message)
+    return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, task_done = task_done, update_task_id = update_task_id, update_task = update_task, message = message)
 
 @app.route('/update_task/<int:task_id>', methods =['GET', 'POST', 'DELETE'])
 def update_task(task_id, message = ''):
+    message = ''
     
     if (request.method == 'POST' and 'title' in request.form and 'description' in request.form and 'due-date' in request.form and 'task-type' in request.form
         and request.form['title'] != '' and request.form['description'] != ''):
@@ -195,10 +194,11 @@ def update_task(task_id, message = ''):
         cursor.execute('UPDATE Task SET title = %s, description = %s, task_type = %s, deadline = %s WHERE id = %s', (title, description, task_type, due_date, task_id,))
         mysql.connection.commit()
         
-        message = 'Task successfully created!'
-        return redirect(url_for('task'))
-
-    return 'error :('
+        message = 'Task successfully updated!'        
+    else:
+        message = 'Update is failed :('
+        
+    return redirect(url_for('task', message = message))
 
 @app.route('/analysis', methods =['GET', 'POST'])
 def analysis():
@@ -256,14 +256,10 @@ def analysis():
 
 def redirect_login():
     try:
-        print("hey")
         print(session['userid'], flush=True)
         if session['loggedin'] == False or session['userid'] == None:
             return redirect(url_for('login'))
-        else:
-            print("\nWTF\n", flush=True)
     except:
-        print("An exception occurred WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW")
         # Redirect to the login page in case of an exception
         return redirect(url_for('login'))
     

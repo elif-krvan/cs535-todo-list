@@ -14,7 +14,7 @@
 			<div class="login-card-small">
 				<form action="{{ url_for('register') }}" method="post">
 					{% if message is defined and message %}
-						<div class="alert alert-warning">{{ message }}</div>
+						<div>{{ message }}</div>
 					{% endif %}
 					<div class="form-group">
 						<label for="username">Username:</label>
