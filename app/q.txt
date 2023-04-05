@@ -10,4 +10,4 @@ can users add tasks whose deadline has already passed
 +update server time
 -no need- select date time only in the future?
 -message vs alert
-check if analysis is correct
++check if analysis is correct

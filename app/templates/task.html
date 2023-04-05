@@ -106,7 +106,7 @@
 								</form>				
 							{% else %}							
 								{% for key in task_headers.keys() %}
-									{% if task_headers[key] != ' ' and key != 'done_time' and key != 'update'%}
+									{% if key != 'complete' and key != 'done_time' and key != 'update' and key != 'delete' %}
 										<td>
 											{{task[key]}}						
 										</td>
@@ -137,14 +137,14 @@
 				<table>
 					<tr>
 						{% for key in task_headers.keys() %}
-							{% if key != 'Mark' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
+							{% if key != 'complete' and key != 'update' %}<th>{{task_headers[key]}}</th>{% endif %}
 						{% endfor %}
 					</tr>
 				
 					{% for task in task_done %}
 						<tr>
 							{% for key in task_headers.keys() %}
-								{% if task_headers[key] != ' ' and key != 'update' %}<td>{{task[key]}}</td>{% endif %}				
+								{% if key != 'complete' and key != 'update' and key != 'delete' %}<td>{{task[key]}}</td>{% endif %}				
 							{% endfor %}
 							<td>
 								<form action="{{ url_for('delete_task', task_id = task.id) }}" method="post">

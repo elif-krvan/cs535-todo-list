@@ -39,22 +39,25 @@ def is_user_loggedin():
 @app.route('/login', methods =['GET', 'POST'])
 def login():
     message = request.args.get('message')
-    err = request.args.get('err')
+
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM User WHERE username = % s AND password = % s', (username, password, ))
         user = cursor.fetchone()
+        
         if user:              
             session['loggedin'] = True
             session['userid'] = user['id']
             session['username'] = user['username']
             session['email'] = user['email']
-            message = 'Logged in successfull!'
+            message = 'Logged in successfully!'
+            
             return redirect(url_for('task'))
         else:
             message = 'Please enter correct email / password !'
+    
     return render_template('login.html', message = message)
 
 @app.route('/logout', methods =['GET', 'POST'])
@@ -74,12 +77,14 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+        
         if not username or not password or not email:
             message = 'Please fill out the form!'
         else:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute('SELECT * FROM User WHERE username = % s', (username, ))
             account = cursor.fetchone()
+            
             if account:
                 message = 'Choose a different username!'
             else:
@@ -147,6 +152,7 @@ def task(message = ''):
             "due_date": request.form['due-date'],
             "task_type": request.form['task-type'],
         }
+        
         message = 'Please fill all the fields!'
     
     # get task types from db
@@ -164,7 +170,7 @@ def task(message = ''):
     
     # table column headers
     task_headers = {
-        'Mark': ' ',
+        'complete': 'Complete',
         'title': 'Title',
         'description': 'Description',
         'status': 'Status',
@@ -173,7 +179,7 @@ def task(message = ''):
         'done_time': 'Done At',
         'task_type': 'Category',
         'update': 'Update',
-        'Delete': ' '
+        'delete': 'Delete'
     }
     
     return render_template('task.html', task_types = task_types, task_headers = task_headers, task_todo = task_todo, form = form, task_done = task_done, update_task_id = update_task_id, update_task = update_task, message = message)
@@ -207,10 +213,8 @@ def analysis():
     # analysis 1
     cursor.execute('SELECT title, TIME_TO_SEC(TIMEDIFF(done_time, deadline)) AS latency FROM Task WHERE user_id = %s AND status = %s AND done_time > deadline', (session['userid'], TaskStatus.DONE.value,))
     analysis1 = cursor.fetchall() 
-    print(analysis1, flush=True)
     for task in analysis1:
         task['latency'] = seconds_to_time(task['latency'])
-    print(analysis1, flush=True)
     
     analysis1_headers = {
         'title': 'Task Title',
@@ -222,19 +226,16 @@ def analysis():
     analysis2 = cursor.fetchall()
     if analysis2:
         analysis2[0]['average_time'] = avg_to_time(analysis2[0]['average_time'])
-    print(analysis2, flush=True)
     
     # analysis 3
     cursor.execute('SELECT task_type, COUNT(id) AS count FROM Task WHERE user_id = %s AND status = %s GROUP BY task_type ORDER BY count DESC', (session['userid'], TaskStatus.DONE.value,))
     analysis3 = cursor.fetchall()
-    print(analysis3, flush=True)
     
     # analysis 4
     cursor.execute('SELECT title, deadline FROM Task WHERE user_id = %s AND status = %s ORDER BY deadline', (session['userid'], TaskStatus.TODO.value,))
     analysis4 = cursor.fetchall()
     for task in analysis4:
         task['deadline'] = convert_to_datetime(task["deadline"])
-    print(analysis4, flush=True)
     
     analysis4_headers = {
         'title': 'Task Title',
@@ -246,7 +247,6 @@ def analysis():
     analysis5 = cursor.fetchall() 
     for task in analysis5:
         task['completion_time'] = seconds_to_time(task['completion_time'])
-    print(analysis5, flush=True)
     
     analysis5_headers = {
         'title': 'Task Title',
@@ -257,7 +257,6 @@ def analysis():
 
 def redirect_login():
     try:
-        print(session['userid'], flush=True)
         if session['loggedin'] == False or session['userid'] == None:
             return redirect(url_for('login'))
     except:
