@@ -205,7 +205,7 @@ def analysis():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     
     # analysis 1
-    cursor.execute('SELECT title, done_time - deadline AS latency FROM Task WHERE user_id = %s AND status = %s AND done_time > deadline', (session['userid'], TaskStatus.DONE.value,))
+    cursor.execute('SELECT title, TIME_TO_SEC(TIMEDIFF(done_time, deadline)) AS latency FROM Task WHERE user_id = %s AND status = %s AND done_time > deadline', (session['userid'], TaskStatus.DONE.value,))
     analysis1 = cursor.fetchall() 
     print(analysis1, flush=True)
     for task in analysis1:
@@ -218,9 +218,10 @@ def analysis():
     }
     
     # analysis 2
-    cursor.execute('SELECT AVG(done_time - creation_time) AS average_time FROM Task WHERE user_id = %s AND status = %s', (session['userid'], TaskStatus.DONE.value,))
+    cursor.execute('SELECT AVG(TIME_TO_SEC(TIMEDIFF(done_time, creation_time))) AS average_time FROM Task WHERE user_id = %s AND status = %s', (session['userid'], TaskStatus.DONE.value,))
     analysis2 = cursor.fetchall()
-    analysis2[0]['average_time'] = avg_to_time(analysis2[0]['average_time'])
+    if analysis2:
+        analysis2[0]['average_time'] = avg_to_time(analysis2[0]['average_time'])
     print(analysis2, flush=True)
     
     # analysis 3
@@ -241,7 +242,7 @@ def analysis():
     }
     
     # analysis 5
-    cursor.execute('SELECT title, done_time - creation_time AS completion_time FROM Task WHERE user_id = %s AND status = %s ORDER BY completion_time DESC LIMIT 2', (session['userid'], TaskStatus.DONE.value,))
+    cursor.execute('SELECT title, TIME_TO_SEC(TIMEDIFF(done_time, creation_time)) AS completion_time FROM Task WHERE user_id = %s AND status = %s ORDER BY completion_time DESC LIMIT 2', (session['userid'], TaskStatus.DONE.value,))
     analysis5 = cursor.fetchall() 
     for task in analysis5:
         task['completion_time'] = seconds_to_time(task['completion_time'])

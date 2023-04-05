@@ -14,7 +14,7 @@ def seconds_to_time(secs):
 
 def avg_to_time(secs):
     if secs == None:
-        return ''
+        return None
     secs = Decimal(secs)
     
     days, day_reminder = divmod(secs, day_secs)
